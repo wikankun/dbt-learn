@@ -1,0 +1,18 @@
+
+version: 2
+
+models:
+  - name: quiz_rating
+    description: "quiz rating model"
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: survey_state
+        tests:
+          - accepted_values:
+              values: ['done', 'incomplete']
+      - name: avg_rating
+        tests:
+          - not_null
