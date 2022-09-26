@@ -1,4 +1,3 @@
-
 {{ config(materialized='table') }}
 {% set quiz = ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6"] %}
 
@@ -12,7 +11,7 @@ with pivot_table as (
         {% endfor %}
         round(sum(answer_rating) / 6.0, 2) avg_rating
     from
-        {{ ref('survey') }}
+        {{ source('public', 'survey') }}
     group by
         user_id, survey_state
     order by user_id
@@ -23,7 +22,7 @@ select
 	pt.*
 from
 	pivot_table pt
-join {{ ref('user_data') }} u on
+join {{ source('public', 'user_data') }} u on
 	u.id = pt.user_id
 order by
 	u.directorate, pt.user_id

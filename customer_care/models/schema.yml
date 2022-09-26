@@ -1,5 +1,11 @@
-
 version: 2
+
+sources:
+  - name: public
+    tables:
+      - name: objective
+      - name: survey
+      - name: user_data
 
 models:
   - name: quiz_rating
@@ -16,3 +22,40 @@ models:
       - name: avg_rating
         tests:
           - not_null
+
+exposures:
+  - name: completed_quiz_metrics
+    type: dashboard
+    maturity: high
+    url: https://bi.tool/dashboards/1
+    description: "The number of completed quiz"
+    
+    depends_on:
+      - ref('quiz_rating')
+      - source('public', 'user_data')
+      
+    owner:
+      name: Data Engineer
+      email: dataengineer@majoo.id
+
+metrics:
+  - name: completed_quiz
+    label: Completed Quiz
+    model: ref('quiz_rating')
+    description: "The number of completed quiz"
+
+    type: count
+    sql: user_id
+
+    # timestamp: signup_date
+    # time_grains: [day, week, month]
+
+    # dimensions:
+    #   - user
+    
+    filters:
+      - field: survey_state
+        operator: '='
+        value: "'done'"
+
+    meta: {team: Data Engineer}
